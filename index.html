@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+   <meta charset="utf-8">
+   <title>jQuery recall plugin test</title>
+   <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+   <script src="jquery.recall.js"></script>
+   <style>
+      body  {margin: 1em 2em;}
+      input {margin: 0.25em; width: 25em}
+      .note {font-size:.8em; color: #888}
+      .colorBox{width:24em; height:10em; border:2px solid gray; padding:1em; background: Wheat;}
+   </style>
+   <script>
+      $(function(){
+         $("#input1").recall();
+         $("#input2").recall({link: "#input1"});
+         $("#input3").recall({initData: "Jill,Joan,Beth,Mary,Matty,Kerry,Kira,Anna".split(",")});
+         $("#input4").recall({maxLength: 5});
+         $("#input5").recall({matchAny:  true, tooltip: true});
+         $("#input6").recall({matchCase: true, tooltip: true, tooltipText: "Craig was here"});
+         $("#input7").recall({matchAll:  true, tooltip: true, tooltipText: "No matching, just select next in recall history"});
+         $("#textarea1").recall({tooltip: true});
+         var webColors =
+            "AliceBlue,AntiqueWhite,Aqua,Aquamarine,Azure,Beige,Bisque,Black,BlanchedAlmond,"        +
+            "Blue,BlueViolet,Brown,BurlyWood,CadetBlue,Chartreuse,Chocolate,Coral,CornflowerBlue,"   +
+            "Cornsilk,Crimson,Cyan,DarkBlue,DarkCyan,DarkGoldenRod,DarkGray,DarkGrey,DarkGreen,"     +
+            "DarkKhaki,DarkMagenta,DarkOliveGreen,DarkOrange,DarkOrchid,DarkRed,DarkSalmon,"         +
+            "DarkSeaGreen,DarkSlateBlue,DarkSlateGray,DarkSlateGrey,DarkTurquoise,DarkViolet,"       +
+            "DeepPink,DeepSkyBlue,DimGray,DimGrey,DodgerBlue,FireBrick,FloralWhite,ForestGreen,"     +
+            "Fuchsia,Gainsboro,GhostWhite,Gold,GoldenRod,Gray,Grey,Green,GreenYellow,HoneyDew,"      +
+            "HotPink,IndianRed,Indigo,Ivory,Khaki,Lavender,LavenderBlush,LawnGreen,LemonChiffon,"    +
+            "LightBlue,LightCoral,LightCyan,LightGoldenRodYellow,LightGray,LightGrey,LightGreen,"    +
+            "LightPink,LightSalmon,LightSeaGreen,LightSkyBlue,LightSlateGray,LightSlateGrey,"        +
+            "LightSteelBlue,LightYellow,Lime,LimeGreen,Linen,Magenta,Maroon,MediumAquaMarine,"       +
+            "MediumBlue,MediumOrchid,MediumPurple,MediumSeaGreen,MediumSlateBlue,MediumSpringGreen," +
+            "MediumTurquoise,MediumVioletRed,MidnightBlue,MintCream,MistyRose,Moccasin,NavajoWhite," +
+            "Navy,OldLace,Olive,OliveDrab,Orange,OrangeRed,Orchid,PaleGoldenRod,PaleGreen,"          +
+            "PaleTurquoise,PaleVioletRed,PapayaWhip,PeachPuff,Peru,Pink,Plum,PowderBlue,Purple,"     +
+            "RebeccaPurple,Red,RosyBrown,RoyalBlue,SaddleBrown,Salmon,SandyBrown,SeaGreen,SeaShell," +
+            "Sienna,Silver,SkyBlue,SlateBlue,SlateGray,SlateGrey,Snow,SpringGreen,SteelBlue,Tan,"    +
+            "Teal,Thistle,Tomato,Turquoise,Violet,Wheat,White,WhiteSmoke,Yellow,YellowGreen"         ;
+         var colorArray = webColors.split(",");
+         var clrInput = $("#clrInput");
+         clrInput.recall({data: colorArray, matchAny: true, maxLength: 200})
+            .on("input", function(){$(".colorBox").css("background", $(this).val())});
+         $("#teal"        ).click(function(){clrInput.val("Teal").trigger("input")});
+         $("#newHistory"  ).click(function(){clrInput.recall({data:["red","green","blue"]})});
+         $("#addHistory"  ).click(function(){clrInput.recall({add: ["#123","#579","#1AF"]})});
+         $("#clearHistory").click(function(){clrInput.recall({clear: true})});
+         $("#reset"       ).click(function(){clrInput.recall({data:colorArray})});
+      })
+   </script>
+</head>
+<body>
+   <h1>My jQuery input recall plugin test</h1>
+   <p>
+      Up and down arrows will recall previous "matching" entries. By "matching" I mean that typing "Fr" will match
+      previous entries like "Fred" and "Freedom", but not "Felicia" or "Sobol". There are many options that adjust 
+      this behavior. See the comment block in <a href="jquery.recall.js">This Script</a> for a full list of options to the plugin.
+   </p>
+   <p>escape=clears input, ctrl-x=clear history, ctrl-d=dump to console</p>
+   <div class="testarea">
+      <p>Sample Inputs</p>
+      <label>Input 1:</label><input id="input1"/><span class="note">(Basic recall functionality)</span><br>
+      <label>Input 2:</label><input id="input2"/><span class="note">(Uses Input 1's history)</span><br>
+      <label>Input 3:</label><input id="input3"/><span class="note">(Pre initialized to names)</span><br>
+      <label>Input 4:</label><input id="input4"/><span class="note">(Only saves last 5 inputs)</span><br>
+      <label>Input 5:</label><input id="input5"/><span class="note">(Match string anywhere, not just at start, tooltip)</span><br>
+      <label>Input 6:</label><input id="input6"/><span class="note">(Match is case sensitive, custom tooltip)</span><br>
+      <label>Input 7:</label><input id="input7"/><span class="note">(No matching, custom tooltip)</span><br>
+      <label>Input 8:</label><input id="input8"/><span class="note">(Standard input)</span><br>
+
+      <p>A Textarea <span class="note">(Basic history, tooltip, no promises)</span></p>
+      <textarea id="textarea1" rows="6" cols="50"></textarea>
+      <p>An example of an input pre-loaded with web colors <span class="note">(And match string anywhere)</span><br>Try typing something like "blue" and hit the up and down arrows</p>
+      <div class="colorBox">
+         <label>Set Color:</label><input id="clrInput"/>
+      </div>
+      <button id="newHistory"  >New History</button>
+      <button id="addHistory"  >Add History</button>
+      <button id="clearHistory">Clear History</button>
+      <button id="reset"       >Reset History</button>
+      <button id="teal"        >Teal</button>
+   </div>
+   <p>The plugin is readable and contains imbedded documentation. The minified version is 3&#189;k<br>Craig Fitzgerald</p>
+</body>
+</html>
